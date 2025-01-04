@@ -1,0 +1,758 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Food Delivery System </title>
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.6.2/dist/css/bootstrap.min.css">
+  <script src="https://cdn.jsdelivr.net/npm/jquery@3.7.1/dist/jquery.slim.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.1/dist/umd/popper.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@4.6.2/dist/js/bootstrap.bundle.min.js"></script>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
+
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+
+    }
+
+
+    .header {
+      background: linear-gradient(rgba(0, 0, 0, 0.5), rgba(0, 0, 0, 0.5)), url('https://res.cloudinary.com/rainforest-cruises/images/c_fill,g_auto/f_auto,q_auto/w_1120,h_732,c_fill,g_auto/v1661347425/india-food-dal-tadka/india-food-dal-tadka-1120x732.jpg') center center/cover no-repeat;
+      color: white;
+      height: 400px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      text-align: center;
+    }
+
+    .header h1 {
+      font-size: 3rem;
+      font-weight: bold;
+    }
+
+    /* Navbar customization */
+    .navbar {
+      position: fixed;
+      top: 0;
+      width: 100%;
+      z-index: 1000;
+      background: transparent !important;
+    }
+
+    .navbar.scrolled {
+      background: linear-gradient(rgba(0, 0, 0, 0.5), rgba(0, 0, 0, 0.5)), url('https://res.cloudinary.com/rainforest-cruises/images/c_fill,g_auto/f_auto,q_auto/w_1120,h_732,c_fill,g_auto/v1661347425/india-food-dal-tadka/india-food-dal-tadka-1120x732.jpg')center center/cover no-repeat !important;
+    }
+
+    .navbar a {
+      color: white !important;
+      text-decoration: none;
+      padding: 10px;
+      font-weight: bold;
+    }
+
+    .modal {
+      display: none;
+      /* Hidden by default */
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: rgba(0, 0, 0, 0.5);
+      justify-content: center;
+      align-items: center;
+    }
+
+    .modal-content {
+      background: white;
+      padding: 20px;
+      border-radius: 8px;
+      width: 300px;
+      text-align: center;
+      color: #f0f0f0;
+    }
+
+    .modal-content input {
+      width: 90%;
+      padding: 10px;
+      margin: 10px 0;
+    }
+
+    #signin-button {
+      background-color: #28a745;
+      /* Bootstrap's success color */
+      width: 150px;
+      margin-left: 50px;
+      color: white;
+      border: none;
+      border-radius: 25px;
+      padding: 10px 20px;
+      font-size: 16px;
+      font-weight: bold;
+      cursor: pointer;
+      transition: all 0.3s ease;
+      box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.2);
+    }
+
+    #signin-button:hover {
+      background-color: #218838;
+      /* Darker success color */
+      box-shadow: 0px 6px 8px rgba(0, 0, 0, 0.3);
+      transform: translateY(-2px);
+    }
+
+    #signin-button:active {
+      background-color: #1e7e34;
+      /* Even darker success color */
+      transform: translateY(0px);
+      box-shadow: 0px 3px 5px rgba(0, 0, 0, 0.2);
+    }
+
+
+    .navbar .nav-link {
+      color: white;
+
+    }
+
+    .navbar .nav-link:hover {
+      text-decoration: underline;
+      color: rgb(176, 237, 10) !important;
+
+    }
+
+    .btn-signin {
+      background-color: #4caf50;
+      color: white;
+    }
+
+
+    /* Carousel customization */
+    .carousel-inner {
+      position: relative;
+    }
+
+    .carousel-item img {
+      margin: auto;
+    }
+
+    .carousel-caption {
+      position: absolute;
+
+      /* transform: translateY(-50%); */
+      /* background-color: rgba(0, 0, 0, 0.5); */
+      color: white;
+      padding: 10px;
+      border-radius: 5px;
+    }
+
+    /* Food categories */
+    .food-categories {
+      margin: 30px 0;
+    }
+
+    .food-categories img {
+      border-radius: 50%;
+      width: 100px;
+      height: 100px;
+      object-fit: cover;
+    }
+
+    .food-categories .menu-title {
+      font-size: 0.9rem;
+      color: gray;
+      margin-top: 10px;
+    }
+
+    /* Card Styling */
+    .card {
+      margin: 15px 0;
+      border-radius: 20px;
+    }
+
+    .card img {
+      height: 250px;
+      object-fit: cover;
+      border-top-left-radius: 20px;
+      border-top-right-radius: 20px;
+
+
+    }
+
+    .quantity-controls {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 10px;
+    }
+
+    .quantity-controls button {
+      background-color: #4caf50;
+      color: white;
+      border: none;
+      padding: 5px 10px;
+      border-radius: 5px;
+      font-size: 1rem;
+      cursor: pointer;
+    }
+
+    .card {
+      margin: 15px 0;
+      transition: transform 0.3s ease, box-shadow 0.3s ease;
+      box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    }
+
+    .card:hover {
+      transform: scale(1.05);
+      box-shadow: 0 8px 16px rgba(0, 0, 0, 0.2);
+    }
+
+    .dropdown-item:hover {
+      background-color: #2f2d2c;
+      color: beige;
+    }
+
+    #mode-toggle {
+      background-color: #3f3f3f;
+      color: #fabebe;
+      border: none;
+      border-radius: 50%;
+      width: 60px;
+      height: 60px;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      cursor: pointer;
+      font-size: 24px;
+      transition: background-color 0.3s ease, color 0.3s ease, transform 0.3s ease;
+      box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.2);
+    }
+
+    #mode-toggle:hover {
+      background-color: rgb(176, 237, 10);
+      color: #3f3f3f;
+      transform: scale(1.1);
+    }
+
+    #mode-toggle:active {
+      transform: scale(0.95);
+    }
+
+    .footer-jumbotron {
+      bottom: 0;
+      left: 0;
+      height: 80px;
+      width: 100%;
+      background-color: #343a40;
+      /* Matches your bg-dark class */
+      color: white;
+      padding: 10px 0;
+      z-index: 1000;
+      /* Ensures it stays above other elements */
+      text-align: center;
+      margin: 0;
+    }
+  </style>
+</head>
+
+<body>
+  <!-- Navbar -->
+  <nav class=" navbar navbar-expand-sm bg-dark navbar-dark sticky-top">
+    <div style="display: flex; align-items: center; border-radius: 10px;">
+      <a href="index2.html" class="navbar-brand">
+        <img src="Food delivery/logo.jpg" alt="Brand Logo" class="rounded-circle" height="111px" width="165px">
+      </a>
+    </div>
+
+    <div class="collapse navbar-collapse justify-content-end" id="navbarNav">
+      <ul class="navbar-nav">
+        <li class="nav-item"><a class="nav-link Home" href="#"> Home </a></li>
+        <li class="nav-item Menu"><a class="nav-link" href="#menu_target"> Menu </a></li>
+
+        <li class="nav-item">
+          <div id="login-option" class="nav-link bg-success" style="border-radius: 20%;"><a href="#"
+              id="login-link">Login</a></div>
+          <div class="modal" id="login-modal">
+            <div class="modal-content bg-dark">
+              <h2>Sign In</h2>
+              <input type="text" id="username" placeholder="Username" required>
+              <input type="password" id="password" placeholder="Password" required>
+              <button id="signin-button" class="bg-success"> Sign In </button>
+            </div>
+          </div>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link" href="#"><i class="fas fa-shopping-cart">Checkout</i></a>
+        </li>
+      </ul>
+      <button id="mode-toggle"> <i class="fas fa-lightbulb"></i> </button>
+    </div>
+  </nav>
+
+  <!-- Header -->
+  <header class="header">
+    <div>
+      <h1 class="">Delicious Food Delivered to Your Doorstep</h1>
+      <h4 style="font-weight: bold;">Order from a variety of cuisines and enjoy fresh
+        meals every
+        time!</h4>
+    </div>
+  </header>
+
+  <div class="content">
+    <!-- Popular Restaurants Heading -->
+    <div class="text-center mt-5">
+      <h2>Popular Restaurants Near You</h2>
+      <hr style="width: 10%; margin: auto; border: 2px solid #4caf50;">
+    </div>
+
+    <!-- Carousel -->
+    <div id="restaurantCarousel" class="carousel slide mt-4" data-ride="carousel">
+      <div class="carousel-inner">
+        <div class="carousel-item active">
+          <img
+            src="https://dynamic-media-cdn.tripadvisor.com/media/photo-o/16/84/de/61/trident-hotel-restaurant.jpg?w=900&h=500&s=1"
+            class="d-block w-50" alt="Restaurant 1">
+          <div class="carousel-caption">
+            <h4 style="font-size: 1.5rem; font-weight: bold; text-shadow: 2px 2px 8px rgba(0,0,0,0.7);">The Trident
+              Hotel
+            </h4>
+          </div>
+        </div>
+        <div class="carousel-item">
+          <img
+            src="https://dynamic-media-cdn.tripadvisor.com/media/photo-o/10/e4/fa/cb/get-together-view.jpg?w=900&h=500&s=1"
+            class="d-block w-50" alt="Restaurant 2">
+          <div class="carousel-caption">
+            <h4 style="font-size: 1.5rem; font-weight: bold; text-shadow: 2px 2px 8px rgba(0,0,0,0.7);">Hotel Mainland
+              China</h4>
+          </div>
+        </div>
+        <div class="carousel-item">
+          <img
+            src="https://dynamic-media-cdn.tripadvisor.com/media/photo-o/1d/0b/3c/f8/beautiful-ambience-with.jpg?w=900&h=500&s=1"
+            class="d-block w-50" alt="Restaurant 3">
+          <div class="carousel-caption">
+            <h4 style="font-size: 1.5rem; font-weight: bold; text-shadow: 2px 2px 8px rgba(0,0,0,0.7);">The Zaika</h4>
+          </div>
+        </div>
+      </div>
+      <a class="carousel-control-prev" href="#restaurantCarousel" role="button" data-slide="prev">
+        <span class="carousel-control-prev-icon bg-info" aria-hidden="true"></span>
+        <span class="sr-only">Previous</span>
+      </a>
+      <a class="carousel-control-next" href="#restaurantCarousel" role="button" data-slide="next">
+        <span class="carousel-control-next-icon bg-info" aria-hidden="true"></span>
+        <span class="sr-only">Next</span>
+      </a>
+    </div>
+
+    <!-- Food categories -->
+    <div class="food-categories text-center">
+      <h3 id="menu_target">Explore Our Menu</h3>
+      <hr style="width: 10%; margin: auto; border: 2px solid #4caf50;">
+      <div class="d-flex justify-content-center flex-wrap">
+        <div class="p-2">
+          <img src="Food delivery\menu_1.png" alt="Salad">
+          <p class="menu-title">Salad</p>
+        </div>
+        <div class="p-2">
+          <img src="Food delivery/menu_2.png" alt="Rolls">
+          <p class="menu-title">Rolls</p>
+        </div>
+        <div class="p-2">
+          <img src="Food delivery/menu_3.png" alt="Desserts">
+          <p class="menu-title">Desserts</p>
+        </div>
+        <div class="p-2">
+          <img src="Food delivery/menu_4.png" alt="Sandwich">
+          <p class="menu-title">Sandwich</p>
+        </div>
+        <div class="p-2">
+          <img src="Food delivery/menu_5.png" alt="Cake">
+          <p class="menu-title">Cake</p>
+        </div>
+        <div class="p-2">
+          <img src="Food delivery/menu_6.png" alt="Pure Veg">
+          <p class="menu-title">Pure Veg</p>
+        </div>
+        <div class="p-2">
+          <img src="Food delivery/menu_7.png" alt="Pasta">
+          <p class="menu-title">Pasta</p>
+        </div>
+        <div class="p-2">
+          <img src="Food delivery/menu_8.png" alt="Noodles">
+          <p class="menu-title">Noodles</p>
+        </div>
+      </div>
+    </div>
+
+    <!-- Food Cards -->
+    <div class="container mt-5 item_page">
+      <h3 class="text-center mb-4">Popular Dishes Near You</h3>
+      <hr style="width: 10%; margin: auto; border: 2px solid #4caf50;">
+      <div class="row">
+        <!-- Row 1 -->
+        <div class="col-md-3">
+          <div class="card">
+            <img src="Food delivery/food_1.png" class="card-img-top" alt="Dish 1">
+            <div class="card-body">
+              <h5 class="card-title text-danger">Greek salad</h5>
+              <p class="card-text">Price: ₹200</p>
+              <div class="quantity-controls">
+                <button class="minus">-</button>
+                <span class="quantity">0</span>
+                <button class="plus">+</button>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="col-md-3">
+          <div class="card">
+            <img src="Food delivery/food_2.png" class="card-img-top" alt="Dish 2">
+            <div class="card-body">
+              <h5 class="card-title text-danger">Veg salad</h5>
+              <p class="card-text">Price: ₹150</p>
+              <div class="quantity-controls">
+                <button class="minus">-</button>
+                <span class="quantity">0</span>
+                <button class="plus">+</button>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class=" col-md-3">
+          <div class="card">
+            <img src="Food delivery/food_3.png" class="card-img-top" alt="Dish 3">
+            <div class="card-body">
+              <h5 class="card-title text-danger">Clover salad</h5>
+              <p class="card-text">Price: ₹270</p>
+              <div class="quantity-controls">
+                <button class="minus">-</button>
+                <span class="quantity">0</span>
+                <button class="plus">+</button>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="col-md-3">
+          <div class="card">
+            <img src="Food delivery/food_4.png" class="card-img-top" alt="Dish 4">
+            <div class="card-body">
+              <h5 class="card-title text-danger">Chicken salad</h5>
+              <p class="card-text">Price: ₹300</p>
+              <div class="quantity-controls">
+                <button class="minus">-</button>
+                <span class="quantity">0</span>
+                <button class="plus">+</button>
+              </div>
+            </div>
+          </div>
+        </div>
+        <button class="btn btn-secondary fas fa-shopping-cart"> Checkout</button>
+      </div>
+
+      <!-- Row 2 -->
+      <div class="row">
+        <div class="col-md-3">
+          <div class="card">
+            <img src="Food delivery/food_5.png" class="card-img-top" alt="Dish 5">
+            <div class="card-body">
+              <h5 class="card-title text-danger">Lasagna rolls</h5>
+              <p class="card-text">Price: ₹400</p>
+              <div class="quantity-controls">
+                <button class="minus">-</button>
+                <span class="quantity">0</span>
+                <button class="plus">+</button>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="col-md-3">
+          <div class="card">
+            <img src="Food delivery/food_6.png" class="card-img-top" alt="Dish 6">
+            <div class="card-body">
+              <h5 class="card-title text-danger">Peri-Peri rolls</h5>
+              <p class="card-text">Price: ₹450</p>
+              <div class="quantity-controls">
+                <button class="minus">-</button>
+                <span class="quantity">0</span>
+                <button class="plus">+</button>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="col-md-3">
+          <div class="card">
+            <img src="Food delivery/food_7.png" class="card-img-top" alt="Dish 7">
+            <div class="card-body">
+              <h5 class="card-title text-danger">Chicken rolls</h5>
+              <p class="card-text">Price: ₹375</p>
+              <div class="quantity-controls">
+                <button class="minus">-</button>
+                <span class="quantity">0</span>
+                <button class="plus">+</button>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="col-md-3">
+          <div class="card">
+            <img src="Food delivery/food_8.png" class="card-img-top" alt="Dish 8">
+            <div class="card-body">
+              <h5 class="card-title text-danger">Veg rolls</h5>
+              <p class="card-text">Price: ₹425</p>
+              <div class="quantity-controls">
+                <button class="minus">-</button>
+                <span class="quantity">0</span>
+                <button class="plus">+</button>
+              </div>
+            </div>
+          </div>
+        </div>
+        <button class="btn btn-secondary fas fa-shopping-cart"> Checkout</button>
+      </div>
+
+      <!-- Row 3 -->
+      <div class="row">
+        <div class="col-md-3">
+          <div class="card">
+            <img src="Food delivery/food_9.png" class="card-img-top" alt="Dish 9">
+            <div class="card-body">
+              <h5 class="card-title text-danger">Ripple Ice cream</h5>
+              <p class="card-text">Price: ₹530</p>
+              <div class="quantity-controls">
+                <button class="minus">-</button>
+                <span class="quantity">0</span>
+                <button class="plus">+</button>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="col-md-3">
+          <div class="card">
+            <img src="Food delivery/food_10.png" class="card-img-top" alt="Dish 10">
+            <div class="card-body">
+              <h5 class="card-title text-danger">Fruit Ice Cream</h5>
+              <p class="card-text">Price: ₹550</p>
+              <div class="quantity-controls">
+                <button class="minus">-</button>
+                <span class="quantity">0</span>
+                <button class="plus">+</button>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="col-md-3">
+          <div class="card">
+            <img src="Food delivery/food_11.png" class="card-img-top" alt="Dish 11">
+            <div class="card-body">
+              <h5 class="card-title text-danger">Jar Ice Cream</h5>
+              <p class="card-text">Price: ₹600</p>
+              <div class="quantity-controls">
+                <button class="minus">-</button>
+                <span class="quantity">0</span>
+                <button class="plus">+</button>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="col-md-3">
+          <div class="card">
+            <img src="Food delivery/food_12.png" class="card-img-top" alt="Dish 12">
+            <div class="card-body">
+              <h5 class="card-title text-danger">Vanilla Ice Cream</h5>
+              <p class="card-text">Price: ₹480</p>
+              <div class="quantity-controls">
+                <button class="minus">-</button>
+                <span class="quantity">0</span>
+                <button class="plus">+</button>
+              </div>
+            </div>
+          </div>
+        </div>
+        <button class="btn btn-secondary fas fa-shopping-cart"> Checkout</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Cart Section -->
+  <div id="cart-container" class="container mt-4 d-none">
+    <div id="cart-items-container">
+      <p>Your cart is empty.</p>
+    </div>
+    <div id="cart-buttons">
+      <button class="btn btn-success Confirm" type="button"> Confirm Order</button>
+      <button class="btn btn-danger Cancel" type="button"> Cancel Order</button>
+
+      <div class="nav-item dropdown mt-5">
+        <a class="nav-link dropdown-toggle text-danger" href="#" id="contactsDropdown" role="button"
+          data-toggle="dropdown">
+          Contact Us
+        </a>
+        <div class="dropdown-menu bg-light">
+          <!-- Name with Submenu -->
+          
+
+          <a class="dropdown-item " href="mailto:webosingh93@gmail.com" id="name1">TribhuwanSingh</a>
+
+        </div>
+      </div>
+
+    </div>
+  </div>
+
+  <!-- Jumbotron Footer Section -->
+  <div class="jumbotron text-center text-white footer-jumbotron bg-dark">
+    <p class="footer-text">
+      <label> Suggestions: </label>
+      <input type="text" id="Suggestions" placeholder="Write your thoughts..."> <br>
+      © 2024 Foodie'z. All rights reserved.
+    </p>
+    <p class="mb-0">Designed by <a href="https://github.com/Tribhuwansingh2023"
+      target="_blank">TribhuwanSingh</a></p>
+  </div>
+
+
+
+  <script>
+    // Get elements
+    const loginLink = document.getElementById("login-link");
+    const loginModal = document.getElementById("login-modal");
+    const signinButton = document.getElementById("signin-button");
+
+    // Show login modal when "Login" is clicked
+    loginLink.addEventListener("click", (event) => {
+      event.preventDefault(); // Prevent default anchor behavior
+      loginModal.style.display = "flex"; // Show modal
+    });
+
+    // Update navigation bar when "Sign In" is clicked
+    signinButton.addEventListener("click", () => {
+      const username = document.getElementById("username").value.trim();
+      if (username) {
+        document.getElementById("login-option").innerHTML = `<a href="#">${username}</a>`;
+        loginModal.style.display = "none"; // Hide modal
+      } else {
+        alert("Please enter a username.");
+      }
+    });
+    // Close modal if user clicks outside the form (optional)
+    window.addEventListener("click", (event) => {
+      if (event.target === loginModal) {
+        loginModal.style.display = "none";
+      }
+    });
+
+
+
+
+
+    $(document).ready(function () {
+  var cartData = [];
+
+  // Event handler for + and - buttons
+  $('.plus, .minus').click(function () {
+    var $quantitySpan = $(this).siblings('.quantity');
+    var currentQuantity = parseInt($quantitySpan.text());
+    var $card = $(this).closest('.card');
+    var itemTitle = $card.find('.card-title').text();
+    var itemPrice = parseFloat($card.find('.card-text').text().replace('Price: ₹', ''));
+
+    if ($(this).hasClass('plus')) {
+      currentQuantity++;
+    } else if ($(this).hasClass('minus') && currentQuantity > 0) {
+      currentQuantity--;
+    }
+
+    $quantitySpan.text(currentQuantity);
+
+    // Update cart data
+    if (currentQuantity > 0) {
+      var existingItem = cartData.find(item => item.title === itemTitle);
+      if (existingItem) {
+        existingItem.quantity = currentQuantity;
+        existingItem.total = itemPrice * currentQuantity;
+      } else {
+        cartData.push({ title: itemTitle, price: itemPrice, quantity: currentQuantity, total: itemPrice * currentQuantity });
+      }
+    } else {
+      cartData = cartData.filter(item => item.title !== itemTitle);
+    }
+
+    // Update the cart UI
+    updateCartUI();
+  });
+
+  // Function to update the cart UI
+  function updateCartUI() {
+    var $cartItemsContainer = $('#cart-items-container');
+    $cartItemsContainer.empty(); // Clear previous cart items
+
+    let grandTotal = 0;
+
+    if (cartData.length > 0) {
+      // Add the cart items
+      cartData.forEach(function (item) {
+        var cartItemHtml = '<div class="cart-item">' +
+          '<p>' + item.title + ' - ₹' + item.price + ' x ' + item.quantity + ' = ₹' + item.total.toFixed(2) + '</p>' +
+          '</div>';
+        $cartItemsContainer.append(cartItemHtml);
+
+        grandTotal += item.total;
+      });
+
+      // Add Grand Total
+      $cartItemsContainer.append('<div class="cart-grand-total">' +
+        '<p><strong>Grand Total: ₹' + grandTotal.toFixed(2) + '</strong></p>' +
+        '</div>');
+    } else {
+      $cartItemsContainer.append('<p>Your cart is empty.</p>');
+    }
+  }
+
+  // Cart Toggle Method
+  $(".fa-shopping-cart").click(function () {
+    $(".content").toggleClass("d-none");
+    $("#cart-container").toggleClass("d-none");
+  });
+
+  $(".Menu").click(function () {
+    $(".content").removeClass("d-none");
+  });
+
+  $(".Home").click(function () {
+    $(".content").removeClass("d-none");
+  });
+
+  $(".Confirm").click(function () {
+    alert("Order Confirmed !!");
+    $("#cart-container").toggleClass("d-none");
+    $(".content").removeClass("d-none");
+  });
+
+  $(".Cancel").click(function () {
+    alert("Order Cancelled.");
+    $("#cart-container").toggleClass("d-none");
+    $(".content").removeClass("d-none");
+  });
+      $("#mode-toggle").click(function () {
+        $("body").toggleClass("bg-dark text-info");
+      });
+
+      $(window).scroll(function () {
+        if ($(this).scrollTop() > 50) {
+          $(".navbar").addClass("scrolled"); // Add 'scrolled' class when user scrolls down
+        } else {
+          $(".navbar").removeClass("scrolled"); // Remove 'scrolled' class when at the top
+        }
+      });
+
+    });
+
+  </script>
+</body>
+
+</html>
